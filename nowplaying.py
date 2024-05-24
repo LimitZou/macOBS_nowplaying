@@ -4,8 +4,8 @@ import subprocess
 import pybase64
 from PIL import Image
 
-image_path = 'macOBS_nowplaying/macOBS_nowplaying/play/image.jpeg'  # 保存封面的位置
-text_path = 'macOBS_nowplaying/macOBS_nowplaying/play/play.txt'  # 保存媒体信息的位置
+image_path = '/Users/limit/Development/Python/Git/macOBS_nowplaying/play/image.jpeg'  # 保存封面的位置，请更改为自己的地址
+text_path = '/Users/limit/Development/Python/Git/macOBS_nowplaying/play/play.txt'  # 保存媒体信息的位置，请更改为自己的地址
 limit_number = 55  # 你需要提供一个限制字符数量的值
 limit_Get_image_number = 3  # 在封面获取失败后最多获取几次封面
 refresh_rate = 1  # 间隔多久检测一次媒体变化，单位为秒，越小则越吃性能
