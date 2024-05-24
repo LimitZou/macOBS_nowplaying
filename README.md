@@ -1,4 +1,4 @@
-# macOBS_nowplaying
+# pwvimacOBS_nowplaying
 
 # 简介
 
@@ -18,8 +18,9 @@ Mac使用OBS直播时，较为优雅显示正在播放歌曲的封面和名称�
 brew install nowplaying-cli
 ```
 
-2. 然后运行**python**文件，需要用到几个库。
-3. 在OBS中导入标题文本和封面图像，依照自己的喜好进行设置。
+2. 配置nowplaying.py中的图像与文本路径，可以依照自己喜好自定义输出设置等。
+3. 然后运行nowplaying.py文件，需要支持使用中的的几个常用库（os、time、subproce、pybase64、Image）。
+4. 在OBS中导入文本和图像文件，依照自己的喜好进行设置。
 
 # 实现效果
 
