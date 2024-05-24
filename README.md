@@ -1,0 +1,2 @@
+# macOBS_nowplaying
+Mac使用OBS直播时，较为优雅显示正在播放歌曲的封面和名称的方案
