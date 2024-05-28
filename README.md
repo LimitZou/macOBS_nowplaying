@@ -1,4 +1,4 @@
-# pwvimacOBS_nowplaying
+# macOBS_nowplaying
 
 # 简介
 
