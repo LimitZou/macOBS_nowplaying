@@ -4,17 +4,30 @@ import subprocess
 import pybase64
 from PIL import Image
 
-image_path = '/Users/limit/Development/Python/Git/macOBS_nowplaying/play/image.jpeg'  # 保存封面的位置，请更改为自己的地址
-text_path = '/Users/limit/Development/Python/Git/macOBS_nowplaying/play/play.txt'  # 保存媒体信息的位置，请更改为自己的地址
-limit_number = 55  # 你需要提供一个限制字符数量的值
-limit_Get_image_number = 3  # 在封面获取失败后最多获取几次封面
+image_path = '/Users/limit/live/歌曲/image.jpeg'  # 保存封面的位置
+text_path = '/Users/limit/live/歌曲/play.txt'  # 保存媒体信息的位置
+limit_numbers = [65, 30, 30]  # 你需要提供一个限制字符数量的值，第一项为歌曲名称，第二项为作者，第三项为专辑名
+limit_get_image_number = 3  # 在封面获取失败后最多获取几次封面
 refresh_rate = 1  # 间隔多久检测一次媒体变化，单位为秒，越小则越吃性能
 
 
 # 获取当前播放媒体的标识码,只截取少量信息，方便之后判断优化性能
 def get_artist_title_raw():
-    result = subprocess.run(['nowplaying-cli', 'get', 'ArtworkIdentifier'], capture_output=True)
+    result = subprocess.run(['nowplaying-cli', 'get', 'ContentItemIdentifier'], capture_output=True)
     return result
+
+
+# 限制媒体信息字符数量的函数
+def truncate_lines(limited_output_lines, limit_numbers):
+    truncated_lines = []
+    for i, line in enumerate(limited_output_lines):
+        if i < len(limit_numbers):
+            limit = limit_numbers[i]
+            if len(line) > limit:
+                truncated_lines.append(line[:limit] + "...")
+            else:
+                truncated_lines.append(line)
+    return truncated_lines
 
 
 # 获取当前艺术家和标题、专辑并作处理的函数
@@ -25,16 +38,12 @@ def get_artist_title():
     # 拆分输出为列表
     output_lines = output.split('\n')
 
-    # 检测并限制每行字符数量
-    limited_output_lines = []
-    for line in output_lines:
-        if len(line) > limit_number:
-            line = line[:limit_number] + "..."
-        limited_output_lines.append(line)
-
     # 确保limited_output_lines至少有三个元素
-    while len(limited_output_lines) < 3:
-        limited_output_lines.append('')  # 添加空白项
+    while len(output_lines) < 3:
+        output_lines.append('')  # 添加空白项
+
+    # 检测并限制每行字符数量
+    limited_output_lines = truncate_lines(output_lines, limit_numbers)
 
     # 判断是否需要添加短横线和专辑信息
     # 判断是否有专辑这一项，没专辑且没作者的话直接输出标题，有作者的话输出标题+作者
@@ -106,7 +115,7 @@ def main():
                     print("获取封面失败，尝试再次获取")
                     count += 1
                     time.sleep(0.5)
-                    if count >= limit_Get_image_number:
+                    if count >= limit_get_image_number:
                         print("不再获取")
                         break
                     continue
@@ -115,14 +124,14 @@ def main():
 
             # 若获取图片成功的话，统一图片大小为200*200，
             # 注：Apple music能获得的封面为600*600，网易云能获得的为60*60，Spotify能获得的为150*150
-            if count < limit_Get_image_number:
+            if count < limit_get_image_number:
                 img = Image.open(image_path)
                 img = img.resize((200, 200))
                 img.save(image_path)
 
             previous_artist_title = artist_title
 
-            print("\n当前正在播放\n", processed_artist_title)
+            print("\n当前正在播放\n", processed_artist_title, "\n")
             task_count += 1
             time.sleep(2)
         else:
